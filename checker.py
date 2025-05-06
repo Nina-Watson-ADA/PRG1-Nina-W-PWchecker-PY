@@ -3,16 +3,13 @@ import re
 
 OUTPUT_FILE = "./checking_password_log.txt"
 
-
 def get_current_datetime_formatted():
     now = datetime.datetime.now()
     return now.strftime("%d-%m-%Y %H:%M:%S")
 
-
 def read_in_file(filename):
     with open(filename, "r") as f:
             return f.read()
-    
 
 PASSWORD_CRITERIA = {
     "length": re.compile(r".{8,}"),  # Minimum 8 characters
@@ -22,13 +19,11 @@ PASSWORD_CRITERIA = {
     "special_char": re.compile(r"[!@#$%^&*()_+{}\[\]:;<>,.?~\\/\|=]"),  # Must have special characters
 }
 
-
 def is_strong_password(password):
     for criteria in PASSWORD_CRITERIA.values():
         if not criteria.search(password):  
             return False
     return True
-
 
 def get_password_strength(password):
     conditions_passed = 0
@@ -42,6 +37,10 @@ def get_password_strength(password):
         return "Medium"
     else:
         return "Weak"
+    
+def log_timestamp(password,strength):
+    with open(OUTPUT_FILE, "a", encoding="utf-8") as f:
+            f.write(f"password {password} tested at {get_current_datetime_formatted()}. Password str was {strength}\n")
 
 def test_all_passwords(pw_list):
     for password in pw_list:
@@ -49,19 +48,21 @@ def test_all_passwords(pw_list):
         print(f"Password is {password}. Password strength: {strength}")
         #if strength == "Strong"
         # mayhaps make this into a function to call?
-        with open(OUTPUT_FILE, "a", encoding="utf-8") as f:
-            f.write(f"password {password} tested at {get_current_datetime_formatted()}. Password str was {strength}\n")
-
+        log_timestamp(password,strength)
 
 def get_password_from_user():
     while True:  # Loop until a strong password is entered
         password = input("Please enter your password: ")
 
-        with open(OUTPUT_FILE, "a", encoding="utf-8") as f:
-            f.write(f"{get_current_datetime_formatted()}\n")
 
         strength = get_password_strength(password)
         print(f"Password strength: {strength}")
+        log_timestamp(password,strength)
+
+        if password in lines:   
+            print ("your password is SO common that it's in the file")
+        else:
+            print ("it's not in the file")
 
         if strength == "Strong":
             print("Your password is strong.")
@@ -80,8 +81,6 @@ test_all_passwords(pw_list)
 # Main execution
 #get_password_from_user()
 
-
-
 with open(INPUT_FILE,"r", encoding="utf-8") as file: # handles closing atomatically. figure out behaviour of when file exists and doesnt exist 
     data = file.read()
 
@@ -89,15 +88,15 @@ lines = data.split("\n")
 
 print (lines)
 
-
+get_password_from_user()
 
 #trying to see if entered password is in file
-test_list = ["1","2","3","4","5"]
-user_input = input("Enter a password:")
-if user_input in lines:   
-    print ("your password is SO common that it's in the file")
-else:
-    print ("it's not in the file")
+#test_list = ["1","2","3","4","5"]
+#user_input = input("Enter a password:")
+#if user_input in lines:   
+#    print ("your password is SO common that it's in the file")
+#else:
+#    print ("it's not in the file")
 
-for count in lines:
-    print (is_strong_password(count))
+#for count in lines:
+#    print (is_strong_password(count))
