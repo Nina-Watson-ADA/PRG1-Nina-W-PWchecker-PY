@@ -43,6 +43,15 @@ def get_password_strength(password):
     else:
         return "Weak"
 
+def test_all_passwords(pw_list):
+    for password in pw_list:
+        strength = get_password_strength(password)
+        print(f"Password is {password}. Password strength: {strength}")
+        #if strength == "Strong"
+        # mayhaps make this into a function to call?
+        with open(OUTPUT_FILE, "a", encoding="utf-8") as f:
+            f.write(f"password {password} tested at {get_current_datetime_formatted()}. Password str was {strength}\n")
+
 
 def get_password_from_user():
     while True:  # Loop until a strong password is entered
@@ -60,9 +69,35 @@ def get_password_from_user():
         else:
             print("Password does not meet the criteria. Please enter a different password.")
 
-
+INPUT_FILE = "./common_passwords.txt"
 # Read in the poor passwords (replace with actual implementation)
-poor_passwords = read_in_file(OUTPUT_FILE)
+#poor_passwords = read_in_file(OUTPUT_FILE)
+poor_passwords = read_in_file(INPUT_FILE)
 
+pw_list = poor_passwords.split("\n")
+print (pw_list)
+test_all_passwords(pw_list)
 # Main execution
-get_password_from_user()
+#get_password_from_user()
+
+
+
+with open(INPUT_FILE,"r", encoding="utf-8") as file: # handles closing atomatically. figure out behaviour of when file exists and doesnt exist 
+    data = file.read()
+
+lines = data.split("\n")
+
+print (lines)
+
+
+
+#trying to see if entered password is in file
+test_list = ["1","2","3","4","5"]
+user_input = input("Enter a password:")
+if user_input in lines:   
+    print ("your password is SO common that it's in the file")
+else:
+    print ("it's not in the file")
+
+for count in lines:
+    print (is_strong_password(count))
