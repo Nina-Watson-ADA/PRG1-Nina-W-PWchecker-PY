@@ -2,6 +2,7 @@ import datetime
 import re  
 
 OUTPUT_FILE = "./checking_password_log.txt"
+INPUT_FILE = "./common_passwords.txt"
 
 def get_current_datetime_formatted():
     now = datetime.datetime.now()
@@ -44,7 +45,11 @@ def get_password_strength(password):
         return "Medium"
     else:
         return "Weak"
-    
+
+def log_all(password, strength, scrambled): 
+    with open(OUTPUT_FILE, "a", encoding="utf-8") as f:   
+        f.write(f"scrambled password {scrambled}. Tested at {get_current_datetime_formatted()}. Password str was {strength}\n")
+
 def log_timestamp(password,strength):
     with open(OUTPUT_FILE, "a", encoding="utf-8") as f:
             f.write(f"password {password} tested at {get_current_datetime_formatted()}. Password str was {strength}\n")
@@ -53,9 +58,7 @@ def test_all_passwords(pw_list):
     for password in pw_list:
         strength = get_password_strength(password)
         print(f"Password is {password}. Password strength: {strength}")
-        #if strength == "Strong"
-        # mayhaps make this into a function to call?
-        log_timestamp(password,strength)
+        #log_timestamp(password,strength) # - would commit every test one to the file- removed for now
 
 def get_password_from_user():
     while True:  # Loop until a strong password is entered
@@ -63,9 +66,12 @@ def get_password_from_user():
 
         strength = get_password_strength(password)
         print(f"Password strength: {strength}")
-        log_timestamp(password,strength)
+        #log_timestamp(password,strength)
 
-        log_password(scramble(password))
+        #log_password(scramble(password))
+
+        log_all(password, strength, scramble(password))
+
         if password in lines:   
             print ("your password is SO common that it's in the file")
         #else:
@@ -77,7 +83,6 @@ def get_password_from_user():
         else:
             print("Password does not meet the criteria. Please enter a different password.")
 
-INPUT_FILE = "./common_passwords.txt"
 # Read in the poor passwords (replace with actual implementation)
 #poor_passwords = read_in_file(OUTPUT_FILE)
 poor_passwords = read_in_file(INPUT_FILE)
@@ -95,15 +100,4 @@ lines = data.split("\n")
 print (lines)
 
 get_password_from_user()
-
-#trying to see if entered password is in file
-#test_list = ["1","2","3","4","5"]
-#user_input = input("Enter a password:")
-#if user_input in lines:   
-#    print ("your password is SO common that it's in the file")
-#else:
-#    print ("it's not in the file")
-
-#for count in lines:
-#    print (is_strong_password(count))
 
